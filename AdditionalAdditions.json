@@ -1,0 +1,15 @@
+{
+	"id": "AdditionalAdditions",
+	"name": "AdditionalAdditions",
+	"display_name": "Additional Additions",
+	"author": ["Woe"],
+	"description": "An additive add-on adding an astounding amount of additions.",
+	"prefix": "addadd",
+    	"priority": -1,
+	"main_file": "AdditionalAdditions.lua",
+	"version": "0.1a",
+	"dependencies": [
+		"Steamodded (>=1.0.0~BETA-0930a-STEAMODDED)",
+		"Lovely (>=0.7.1)"
+	],
+}

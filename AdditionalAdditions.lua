@@ -1,12 +1,3 @@
---- STEAMODDED HEADER
---- MOD_NAME: Additional Additions
---- MOD_ID: AdditionalAdditions
---- MOD_AUTHOR: [Woe]
---- MOD_DESCRIPTION: An additive add-on adding an astounding amount of additions.
---- BADGE_COLOR: FA74F7
---- PREFIX: addadd
---- VERSION: 0.00001
-
 SMODS.Atlas({ 
     key = "add_atlas",
     path = "additional_atlas.png",
