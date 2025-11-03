@@ -1,0 +1,239 @@
+[manifest]
+version = "1.0.0"
+priority = 0
+
+# shop_start context for stock jokers
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = 'G.shop_jokers:emplace(create_card_for_shop(G.shop_jokers))'
+position = 'after'
+payload = '''
+end
+
+if G.jokers ~= nil then
+    for _, v in ipairs(G.jokers.cards) do
+        if not v.debuff then
+            v:calculate_joker({addadd_shop_start = true})
+        end
+    end
+
+
+'''
+match_indent = true
+times = 1
+
+
+# additional deck part 1, make AA jokers more common
+# there is no part 2 (1984 gif here)
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = '_pool[#_pool + 1] = v.key'
+position = 'before'
+payload = '''
+if G.GAME.selected_back and G.GAME.selected_back.effect.center.key == "b_addadd_additional_deck" then
+    if string.sub(v.key, 1, 8) == "j_addadd" then
+        _pool[#_pool + 1] = v.key
+        _pool_size = _pool_size + 1
+    end
+end
+'''
+match_indent = true
+times = 1
+
+
+# makes shops that have had things stocked not jank after being rerolled
+[[patches]]
+[patches.pattern]
+target = 'functions/button_callbacks.lua'
+pattern = '''play_sound('coin2')'''
+position = 'before'
+payload = '''
+G.shop_jokers.config.card_limit = G.GAME.shop.joker_max 
+G.shop_jokers.T.w = G.GAME.shop.joker_max*1.01*G.CARD_W
+G.shop:recalculate()
+
+'''
+match_indent = true
+times = 1
+
+
+# global variables for role cards
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = '''sort = 'desc','''
+position = 'after'
+payload = '''
+addadd_roles = {
+    masons_used = 0,
+    mystic_seer_active = false,
+    apprentice_seer_active = false,
+    baron_active = false,
+    executive_active = false, 
+    mentalist_active = false,
+    curator_active = false,
+},
+'''
+match_indent = true
+times = 1
+
+
+# other global variables
+#[[patches]]
+#[patches.pattern]
+#target = 'game.lua'
+#pattern = '''sort = 'desc','''
+#position = 'after'
+#payload = '''
+#ww_girl_active = false,
+#'''
+#match_indent = true
+#times = 1
+
+
+# end effects of lasting role cards or jokers
+[[patches]]
+[patches.pattern]
+target = 'functions/button_callbacks.lua'
+pattern = '''G.CONTROLLER.locks.toggle_shop = true'''
+position = 'after'
+payload = '''
+G.GAME.addadd_roles.mystic_seer_active = false
+G.GAME.addadd_roles.apprentice_seer_active = false
+if G.GAME.addadd_roles.baron_active then
+    change_shop_size(-2)
+    G.GAME.addadd_roles.baron_active = false
+end
+if G.GAME.addadd_roles.executive_active then
+    if G.GAME.used_vouchers.v_liquidation then 
+        G.GAME.discount_percent = 50
+    elseif G.GAME.used_vouchers.v_clearance_sale then 
+        G.GAME.discount_percent = 25
+    else
+        G.GAME.discount_percent = 0
+    end
+    G.GAME.addadd_roles.executive_active = false
+end
+if G.GAME.addadd_roles.mentalist_active then
+    G.GAME.addadd_roles.mentalist_active = false
+    if G.GAME.used_vouchers.v_glow_up then 
+        G.GAME.edition_rate = 4
+    elseif G.GAME.used_vouchers.v_hone then 
+        G.GAME.edition_rate = 2
+    else
+        G.GAME.edition_rate = 1
+    end
+end
+G.GAME.addadd_roles.curator_active = false
+'''
+match_indent = true
+times = 1
+
+
+# adds the effects for mystic/apprentice seer
+[[patches]]
+[patches.pattern]
+target = 'functions/UI_definitions.lua'
+pattern = '''local card = create_card(v.type, area, nil, nil, nil, nil, nil, 'sho')'''
+position = 'before'
+payload = '''
+if G.GAME.addadd_roles.mystic_seer_active then
+    v.type = 'Tarot'
+elseif G.GAME.addadd_roles.apprentice_seer_active then
+    v.type = 'Planet'
+end
+'''
+match_indent = true
+times = 1
+
+
+# mentalist no stickers effect 
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = '''local edition = poll_edition('edi'..(key_append or '')..G.GAME.round_resets.ante)'''
+position = 'before'
+payload = '''
+if G.GAME.addadd_roles.mentalist_active then
+    for key, sticker in pairs(SMODS.Stickers) do
+        card.ability[key] = false
+    end
+    card:set_cost(card.cost)
+end
+'''
+match_indent = true
+times = 1
+
+
+# curator fewer commons effect
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = '''local rarity = _rarity or SMODS.poll_rarity("Joker", 'rarity'..G.GAME.round_resets.ante..(_append or ''))'''
+position = 'after'
+payload = '''
+if G.GAME.addadd_roles.curator_active then
+    for i = 1, 3 do
+        if rarity == 1 then
+            rarity = SMODS.poll_rarity("Joker", 'rarity'..G.GAME.round_resets.ante..(_append or ''))
+        end
+    end
+end
+'''
+match_indent = true
+times = 1
+
+
+# makes shop sizes 5 and above not wide
+[[patches]]
+[patches.pattern]
+target = 'functions/button_callbacks.lua'
+pattern = '''G.shop_jokers.T.w = G.GAME.shop.joker_max*1.01*G.CARD_W'''
+position = 'at'
+payload = '''
+if (G.GAME.shop.joker_max > 4) then
+    G.shop_jokers.T.w = 4.04*G.CARD_W
+else
+    G.shop_jokers.T.w = G.GAME.shop.joker_max*1.01*G.CARD_W
+end
+'''
+match_indent = true
+times = 1
+
+
+# move buttons up on matchboxes when hellfire is redeemed
+[[patches]]
+[patches.pattern]
+target = 'card.lua'
+pattern = '''((self.area == G.jokers) or (self.area == G.consumeables)) and {x=x_off - 0.4,y=0} or'''
+position = 'before'
+payload = '''
+(self.ability.set == "matchbox_type" and next(SMODS.find_card("v_addadd_hellfire")) and {x=x_off-0.4, y=-0.5}) or
+'''
+match_indent = true
+times = 1
+
+
+#=============================================
+#================ BOSS BLINDS ================
+#=============================================
+
+# the bottle
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+pattern = '''check_and_set_high_score('hand', hand_chips*mult)'''
+position = 'after'
+payload = '''
+if G.GAME.blind and G.GAME.blind.name == 'bl_addadd_bottle' and not G.GAME.blind.disabled then
+    if (G.GAME.blind.chips < math.floor(hand_chips*mult)) then
+        mult = mod_mult(1)
+        hand_chips = mod_chips(math.floor((G.GAME.blind.chips/100)*35))
+        play_area_status_text("Overscored!")
+    end
+end
+'''
+match_indent = true
+times = 1
