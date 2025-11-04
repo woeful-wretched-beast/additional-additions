@@ -216,10 +216,6 @@ match_indent = true
 times = 1
 
 
-#=============================================
-#================ BOSS BLINDS ================
-#=============================================
-
 # the bottle
 [[patches]]
 [patches.pattern]
@@ -228,7 +224,7 @@ pattern = '''check_and_set_high_score('hand', hand_chips*mult)'''
 position = 'after'
 payload = '''
 if G.GAME.blind and G.GAME.blind.name == 'bl_addadd_bottle' and not G.GAME.blind.disabled then
-    if (G.GAME.blind.chips < math.floor(hand_chips*mult)) then
+    if (G.GAME.blind.chips <= math.floor(hand_chips*mult)) then
         mult = mod_mult(1)
         hand_chips = mod_chips(math.floor((G.GAME.blind.chips/100)*35))
         play_area_status_text("Overscored!")

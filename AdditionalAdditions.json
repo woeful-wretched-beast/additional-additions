@@ -5,9 +5,9 @@
 	"author": ["Woe"],
 	"description": "An additive add-on adding an astounding amount of additions.",
 	"prefix": "addadd",
-    	"priority": -1,
+    	"priority": 0,
 	"main_file": "AdditionalAdditions.lua",
-	"badge_color": "fa74f7",
+	"badge_colour": "fa74f7",
 	"version": "0.1a",
 	"dependencies": [
 		"Steamodded (>=1.0.0~BETA-0930a)",
