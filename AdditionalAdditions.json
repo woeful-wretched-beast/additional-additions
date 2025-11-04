@@ -7,6 +7,7 @@
 	"prefix": "addadd",
     	"priority": -1,
 	"main_file": "AdditionalAdditions.lua",
+	"badge_color": "fa74f7",
 	"version": "0.1a",
 	"dependencies": [
 		"Steamodded (>=1.0.0~BETA-0930a)",
