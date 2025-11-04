@@ -9,7 +9,7 @@
 	"main_file": "AdditionalAdditions.lua",
 	"version": "0.1a",
 	"dependencies": [
-		"Steamodded (>=1.0.0~BETA-0930a-STEAMODDED)",
+		"Steamodded (>=1.0.0~BETA-0930a)",
 		"Lovely (>=0.7.1)"
 	],
 }
