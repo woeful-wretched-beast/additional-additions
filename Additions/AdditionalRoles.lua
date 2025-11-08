@@ -59,7 +59,7 @@ SMODS.Consumable {
             'consumables'
         },
     },
-    config = { stocked_cards = 2 },
+    config = { stocked_cards = 3 },
     loc_vars = function(self, info_queue)
         return { vars = { self.config.stocked_cards} } 
     end,
@@ -273,7 +273,8 @@ SMODS.Consumable {
         name = "The Gunner",
         text = {
             '{C:attention}Reroll{} the shop, all {C:attention}boosters{},',
-            'and all {C:attention}vouchers{}'
+            'and all {C:attention}vouchers{}',
+            '{s:0.8}doesn\'t restock boosters/vouchers{}'
         },
     },
     can_use = function(self, card)
@@ -321,7 +322,8 @@ SMODS.Consumable {
         name = "The Magus",
         text = {
             'Stock a {C:attention}copy{} of a',
-            '{C:green}random{} card in shop'
+            '{C:green}random{} purchasable',
+            'card'
         },
     },
     can_use = function(self, card)
@@ -414,15 +416,25 @@ SMODS.Consumable {
         name = "The Robber",
         text = {
             'All {C:attention}cards{} and {C:attention}boosters{} currently',
-            'in shop are made {C:money}free{}'
+            'in shop are made {C:money}free{}',
+            '{C:inactive}(not {C:dark_edition}negative{C:inactive} cards){}'
         },
     },
+    loc_vars = function(self, info_queue)
+        info_queue[#info_queue+1] = G.P_CENTERS.e_negative
+    end,
     can_use = function(self, card)
         return G.shop
     end,
     use = function(self, card, area, copier)
         for i, c in pairs(G.shop_jokers.cards) do
-            c.cost = 0
+            if c.edition then
+                if not c.edition.key == 'e_negative' then
+                    c.cost = 0
+                end
+            else
+                c.cost = 0
+            end
         end
         for i, c in pairs(G.shop_booster.cards) do
             c.cost = 0
@@ -507,8 +519,8 @@ SMODS.Consumable {
         text = {
             '{C:attention}Destroy{} the chosen Joker',
             'and stock {C:attention}#1#{} Jokers',
-            '{C:attention}one rarity higher{}',
-            '{C:inactive}(Same if {C:rare}rare{C:inactive} or higher)'
+            'of the same {C:attention}rarity{}',
+            '{C:inactive}(1 if higher than {C:rare}rare{C:inactive}){}'
         },
     },
     config = { stocked_cards = 2 },
@@ -520,12 +532,12 @@ SMODS.Consumable {
     end,
     use = function(self, card, area, copier)
         local kill = G.jokers.highlighted[1]
-        local kill_rarity = 0
-        if kill.config.center.rarity == 1 or kill.config.center.rarity == 2 then
-            kill_rarity = kill.config.center.rarity + 1
-        else
-            kill_rarity = kill.config.center.rarity
-        end
+        -- local kill_rarity = 0
+        -- if kill.config.center.rarity == 1 or kill.config.center.rarity == 2 then
+        --     kill_rarity = kill.config.center.rarity + 1
+        -- else
+        local kill_rarity = kill.config.center.rarity
+        -- end
 
         if not kill.ability.eternal then
             kill:start_dissolve()
@@ -536,7 +548,11 @@ SMODS.Consumable {
                 table.insert(stock_candidates, center.key) 
             end
         end
-        for i = 1, self.config.stocked_cards do
+        if kill.config.center.rarity == 3 or kill.config.center.rarity == 2 or kill.config.center.rarity == 1 then
+            for i = 1, self.config.stocked_cards do
+                Addadd_Funcs.stock_card(1, 'Joker', nil, pseudorandom_element(stock_candidates, pseudoseed('diablo')))
+            end
+        else
             Addadd_Funcs.stock_card(1, 'Joker', nil, pseudorandom_element(stock_candidates, pseudoseed('diablo')))
         end
     end

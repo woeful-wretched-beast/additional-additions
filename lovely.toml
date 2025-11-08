@@ -203,7 +203,7 @@ match_indent = true
 times = 1
 
 
-# move buttons up on matchboxes when hellfire is redeemed
+# moves buttons up on matchboxes when hellfire is redeemed
 [[patches]]
 [patches.pattern]
 target = 'card.lua'
@@ -216,12 +216,27 @@ match_indent = true
 times = 1
 
 
+# makes redeeming clearance sale not override the executive
+[[patches]]
+[patches.pattern]
+target = 'card.lua'
+pattern = '''G.GAME.discount_percent = center_table.extra'''
+position = 'after'
+payload = '''
+if G.GAME.addadd_roles.executive_active then
+    G.GAME.discount_percent = 50
+end
+'''
+match_indent = true
+times = 1
+
+
 # the bottle
 [[patches]]
 [patches.pattern]
 target = 'functions/state_events.lua'
-pattern = '''check_and_set_high_score('hand', hand_chips*mult)'''
-position = 'after'
+pattern = '''check_and_set_high_score('hand',  SMODS.calculate_round_score() )'''
+position = 'before'
 payload = '''
 if G.GAME.blind and G.GAME.blind.name == 'bl_addadd_bottle' and not G.GAME.blind.disabled then
     if (G.GAME.blind.chips <= math.floor(hand_chips*mult)) then

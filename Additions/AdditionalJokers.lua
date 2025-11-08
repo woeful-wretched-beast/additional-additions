@@ -672,43 +672,42 @@ SMODS.Joker {
     loc_txt = {
         name = 'Cavalier',
         text = {
-            'Every {C:attention}#2# consumeables{} used,',
-            'create a copy of the most',
-            'recently used {C:tarot}Tarot{} or {C:planet}Planet{}',
-            '{C:inactive}(Currently {C:attention}#1#{C:inactive}, must have room)'
+            'Every {C:attention}#2#{} {C:tarot}Tarots{} or {C:planet}Planets{} used,',
+            'create a {C:attention}copy{} of the used card',
+            '{C:inactive}(Currently {C:attention}#1#{C:inactive}, must have room){}'
         }
     },
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.consumables_used, card.ability.extra.copied_at } }
     end,
     calculate = function(self, card, context)
-        if context.using_consumeable and not context.blueprint then
+        if context.using_consumeable and (context.consumeable.ability.set == "Tarot" or context.consumeable.ability.set == "Planet") and not context.blueprint then
             card.ability.extra.consumables_used = card.ability.extra.consumables_used + 1
             if card.ability.extra.consumables_used == card.ability.extra.copied_at then
                 card.ability.extra.consumables_used = 0
-                if not (context.consumeable.ability.set == "Tarot" or context.consumeable.ability.set == "Planet") then
-                    G.E_MANAGER:add_event(Event({
-                        func = function()
-                            if #G.consumeables.cards < G.consumeables.config.card_limit then
-                                local card = create_card('Tarot_Planet', G.consumeables, nil, nil, nil, nil, G.GAME.last_tarot_planet, 'cava')
-                                card:add_to_deck()
-                                G.consumeables:emplace(card)
-                            end
-                            return true
+                -- if not (context.consumeable.ability.set == "Tarot" or context.consumeable.ability.set == "Planet") then
+                --     G.E_MANAGER:add_event(Event({
+                --         func = function()
+                --             if #G.consumeables.cards < G.consumeables.config.card_limit then
+                --                 local card = create_card('Tarot_Planet', G.consumeables, nil, nil, nil, nil, G.GAME.last_tarot_planet, 'cava')
+                --                 card:add_to_deck()
+                --                 G.consumeables:emplace(card)
+                --             end
+                --             return true
+                --         end
+                --     }))
+                -- else
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        if #G.consumeables.cards < G.consumeables.config.card_limit then
+                            local card = copy_card(context.consumeable)
+                            card:add_to_deck()
+                            G.consumeables:emplace(card)
                         end
-                    }))
-                else
-                    G.E_MANAGER:add_event(Event({
-                        func = function()
-                            if #G.consumeables.cards < G.consumeables.config.card_limit then
-                                local card = copy_card(context.consumeable)
-                                card:add_to_deck()
-                                G.consumeables:emplace(card)
-                            end
-                            return true
-                        end
-                    }))
-                end
+                        return true
+                    end
+                }))
+                -- end
                 G.E_MANAGER:add_event(Event({
                     func = (function()
                         card_eval_status_text(card, 'extra', nil, nil, nil, {message = 'Copied!'})

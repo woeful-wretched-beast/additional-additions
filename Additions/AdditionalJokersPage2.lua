@@ -15,7 +15,8 @@ SMODS.Joker {
         name = 'Clown Car',
         text = {
             'When a {C:attention}joker{} is sold,',
-            'stock a {C:attention}buffoon pack{}'
+            'stock a {C:attention}buffoon pack{}',
+            'that costs {C:money}4${}'
         }
     },
     loc_vars = function(self, info_queue, card)
@@ -27,6 +28,7 @@ SMODS.Joker {
             local card = Card(G.shop_booster.T.x + G.shop_booster.T.w / 2, G.shop_booster.T.y, G.CARD_W * 1.27, G.CARD_H * 1.27, G.P_CARDS.empty, G.P_CENTERS.p_buffoon_normal_1)
             create_shop_card_ui(card, "Booster", G.shop_booster)
             card.ability.booster_pos = G.shop_booster.config.card_limit
+            card.cost = 4
             G.shop_booster:emplace(card)
         end
     end
