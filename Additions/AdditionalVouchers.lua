@@ -34,16 +34,29 @@ SMODS.Voucher {
         name = 'Coven DLC',
         text = {
             'Up to {C:attention}2{} {C:role}Role{} cards',
-            'can be bought',
+            'can be bought and',
+            'made {C:dark_edition}negative{}',
             'without room'
         }
     },
+    loc_vars = function(self, info_queue)
+        info_queue[#info_queue + 1] = { key = 'e_negative_consumable', set = 'Edition', config = { extra = 1 } }
+    end,
 }
 
 local buy_space_ref = G.FUNCS.check_for_buy_space
 G.FUNCS.check_for_buy_space = function(card)
     if card.ability.set == "Role" and next(SMODS.find_card("v_addadd_coven_dlc")) then
-        if (#G.consumeables.cards) < G.consumeables.config.card_limit + 2 then
+        local neg_role_count = 0
+        for i, consumable in pairs(G.consumeables.cards) do
+            if consumable.edition then
+                if consumable.edition.key == 'e_negative' then
+                    neg_role_count = neg_role_count + 1
+                end
+            end
+        end
+        if neg_role_count < 2 then
+            card:set_edition('e_negative', true)
             return true
         end
     end

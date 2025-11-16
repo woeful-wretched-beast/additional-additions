@@ -84,7 +84,7 @@ SMODS.Blind {
     loc_txt = {
         name = 'The Bottle',
         text = {
-            'If hand would win in 1,',
+            'If hand would overscore,',
             'it instead scores 35%',
             'of blind requirements'
         }

@@ -543,7 +543,7 @@ SMODS.Joker {
     cost = 7,
     unlocked = true,
     discovered = true,
-    eternal_compat = false,
+    eternal_compat = true,
     perishable_compat = true,
     blueprint_compat = false,
     loc_txt = {
@@ -613,8 +613,8 @@ SMODS.Joker {
     unlocked = true,
     discovered = true,
     eternal_compat = true,
-    perishable_compat = false,
-    blueprint_compat = true,
+    perishable_compat = true,
+    blueprint_compat = false,
     config = { extra = { active = false, h_size = 4 } },
     loc_txt = {
         name = 'Purple-Eyed Unicorn',

@@ -454,7 +454,8 @@ SMODS.Consumable {
         name = "The Baron",
         text = {
             'This shop has {C:attention}2{}',
-            'more card slots'
+            'more card slots',
+            '{C:inactive}(doesn\'t stack){}'
         },
     },
     set_card_type_badge = function(self, card, badges)
@@ -520,7 +521,7 @@ SMODS.Consumable {
             '{C:attention}Destroy{} the chosen Joker',
             'and stock {C:attention}#1#{} Jokers',
             'of the same {C:attention}rarity{}',
-            '{C:inactive}(1 if higher than {C:rare}rare{C:inactive}){}'
+            '{C:inactive}({C:attention}1{C:inactive} if higher than {C:rare}rare{C:inactive}){}'
         },
     },
     config = { stocked_cards = 2 },
@@ -726,6 +727,9 @@ SMODS.Consumable {
             'of {C:legendary,E:1}every{} owned {C:attention}Joker{}'
         },
     },
+    in_pool = function(self, card) 
+        return G.shop
+    end,
     can_use = function(self, card)
         return G.shop
     end,

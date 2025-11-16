@@ -80,19 +80,6 @@ match_indent = true
 times = 1
 
 
-# other global variables
-#[[patches]]
-#[patches.pattern]
-#target = 'game.lua'
-#pattern = '''sort = 'desc','''
-#position = 'after'
-#payload = '''
-#ww_girl_active = false,
-#'''
-#match_indent = true
-#times = 1
-
-
 # end effects of lasting role cards or jokers
 [[patches]]
 [patches.pattern]
