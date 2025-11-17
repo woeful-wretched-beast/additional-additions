@@ -428,11 +428,7 @@ SMODS.Consumable {
     end,
     use = function(self, card, area, copier)
         for i, c in pairs(G.shop_jokers.cards) do
-            if c.edition then
-                if not c.edition.key == 'e_negative' then
-                    c.cost = 0
-                end
-            else
+            if not (c.edition and c.edition.key == 'e_negative') then
                 c.cost = 0
             end
         end

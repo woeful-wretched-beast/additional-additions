@@ -77,7 +77,7 @@ end
 function Addadd_Funcs.stock_playing_card(card_amount, card_suit, card_rank, card_enhancement, card_seal, card_edition)
     for i = 1, card_amount do
         G.shop_jokers.config.card_limit = #G.shop_jokers.cards + 1
-        local stock_card = create_playing_card({ area = G.shop_jokers, center = card_enhancement, suit = card_suit, rank = card_rank })
+        local stock_card = create_playing_card({ area = G.shop_jokers, center = card_enhancement, suit = card_suit, rank = card_rank, stocked = true })
         stock_card:set_seal(card_seal, false, true)
         stock_card:set_edition(card_edition, true)
         create_shop_card_ui(stock_card)
@@ -88,6 +88,7 @@ end
 
 -- stocks a copy of an existing playing card
 function Addadd_Funcs.stock_playing_card_copy(copied_card)
+    G.shop_jokers.config.card_limit = #G.shop_jokers.cards + 1
     local stock_card = copy_card(copied_card, nil, nil, G.playing_card)
     create_shop_card_ui(stock_card)
     G.shop_jokers:emplace(stock_card)

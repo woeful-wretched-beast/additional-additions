@@ -193,13 +193,14 @@ SMODS.Joker {
     eternal_compat = true,
     perishable_compat = false,
     blueprint_compat = true,
-    config = { extra = { chips = 0, plus = 3 } },
+    config = { extra = { chips = 0, plus = 4 } },
     loc_txt = {
         name = 'Jill',
         text = {
             'This Joker gains {C:chips}+#2#{}',
             'Chips for each {C:attention}Jack{}',
-            'held in hand',
+            'held in hand at end',
+            'of round',
             '{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)'
         }
     },
@@ -213,7 +214,7 @@ SMODS.Joker {
                 message = localize { type = 'variable', key = 'a_chips', vars = { card.ability.extra.chips } }
             }
         end
-        if context.cardarea == G.hand and context.individual and not context.end_of_round then
+        if context.cardarea == G.hand and context.individual and context.end_of_round then
             if context.other_card:get_id() == 11 and not context.other_card.debuff then
                 card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.plus
                 return {

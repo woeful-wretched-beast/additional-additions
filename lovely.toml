@@ -218,6 +218,21 @@ match_indent = true
 times = 1
 
 
+# curator fewer commons effect
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = '''table.insert(G.playing_cards, card)'''
+position = 'at'
+payload = '''
+if not card_init.stocked then
+    table.insert(G.playing_cards, card)
+end
+'''
+match_indent = true
+times = 1
+
+
 # the bottle
 [[patches]]
 [patches.pattern]
