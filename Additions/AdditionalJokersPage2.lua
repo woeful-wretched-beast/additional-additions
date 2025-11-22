@@ -404,7 +404,7 @@ SMODS.Joker {
     end,
     calculate = function(self, card, context)
         if context.using_consumeable and context.consumeable.ability.set == "Role" then
-            G.GAME.current_round.reroll_cost_increase = card.ability.extra.reroll_cost - G.GAME.current_round.reroll_cost
+            G.GAME.current_round.reroll_cost_increase = card.ability.extra.reroll_cost - G.GAME.round_resets.reroll_cost
             G.GAME.current_round.reroll_cost = card.ability.extra.reroll_cost
         end
     end

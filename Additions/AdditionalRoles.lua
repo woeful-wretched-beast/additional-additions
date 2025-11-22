@@ -323,7 +323,8 @@ SMODS.Consumable {
         text = {
             'Stock a {C:attention}copy{} of a',
             '{C:green}random{} purchasable',
-            'card'
+            'card',
+            '{s:0.8}does not copy edition'
         },
     },
     can_use = function(self, card)
@@ -599,7 +600,7 @@ SMODS.Consumable {
     loc_txt = {
         name = "The Curator",
         text = {
-            '{C:common}Common{} Jokers are {C:attention}5X{}',
+            '{C:common}Common{} Jokers are {C:attention}3X{}',
             'less likely to appear',
             'this shop, {C:attention}rerolls{} shop'
         },

@@ -218,7 +218,7 @@ match_indent = true
 times = 1
 
 
-# curator fewer commons effect
+# makes aura seer cards not put in deck view before being bought
 [[patches]]
 [patches.pattern]
 target = 'functions/common_events.lua'
