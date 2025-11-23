@@ -85,7 +85,7 @@ SMODS.Blind {
         name = 'The Bottle',
         text = {
             'If hand would overscore,',
-            'it instead scores 35%',
+            'it instead scores 60%',
             'of blind requirements'
         }
     },

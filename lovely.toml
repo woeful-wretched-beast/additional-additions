@@ -233,6 +233,21 @@ match_indent = true
 times = 1
 
 
+# secret bug fix for illusion since dragon deck is effected
+[[patches]]
+[patches.pattern]
+target = 'functions/UI_definitions.lua'
+pattern = '''if (v.type == 'Base' or v.type == 'Enhanced') and G.GAME.used_vouchers["v_illusion"] and pseudorandom(pseudoseed('illusion')) > 0.8 then '''
+position = 'before'
+payload = '''
+if (v.type == 'Base' or v.type == 'Enhanced') and G.GAME.used_vouchers["v_illusion"] then
+    card:set_seal(SMODS.poll_seal({key ='illu', mod = 3}))
+end
+'''
+match_indent = true
+times = 1
+
+
 # the bottle
 [[patches]]
 [patches.pattern]
@@ -243,7 +258,7 @@ payload = '''
 if G.GAME.blind and G.GAME.blind.name == 'bl_addadd_bottle' and not G.GAME.blind.disabled then
     if (G.GAME.blind.chips <= math.floor(hand_chips*mult)) then
         mult = mod_mult(1)
-        hand_chips = mod_chips(math.floor((G.GAME.blind.chips/100)*35))
+        hand_chips = mod_chips(math.floor((G.GAME.blind.chips/100)*60))
         play_area_status_text("Overscored!")
     end
 end

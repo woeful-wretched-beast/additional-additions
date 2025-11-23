@@ -324,7 +324,8 @@ SMODS.Consumable {
             'Stock a {C:attention}copy{} of a',
             '{C:green}random{} purchasable',
             'card',
-            '{s:0.8}does not copy edition'
+            '{s:0.8,C:inactive}removes {s:0.8,C:dark_edition}negative{}',
+            '{s:0.8,C:inactive} from copy{}'
         },
     },
     can_use = function(self, card)
@@ -333,11 +334,7 @@ SMODS.Consumable {
     use = function(self, card, area, copier)
         if #G.shop_jokers.cards > 0 then
             local copied_card = pseudorandom_element(G.shop_jokers.cards, pseudoseed('hit role magus from hit discord server town of salem anticipation'))
-            if copied_card.ability.effect == 'Base' or copied_card.ability.set == 'Enhanced' then
-                Addadd_Funcs.stock_playing_card_copy(copied_card)
-            else
-                Addadd_Funcs.stock_card(1, copied_card.ability.set, nil, copied_card.config.center.key)
-            end
+            Addadd_Funcs.stock_copied_card(copied_card, (copied_card.edition and copied_card.edition.key == 'e_negative'))
         end
     end
 }
