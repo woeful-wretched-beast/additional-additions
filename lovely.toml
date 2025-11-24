@@ -233,7 +233,7 @@ match_indent = true
 times = 1
 
 
-# secret bug fix for illusion since dragon deck is effected
+# secret bug fix for illusion since dragon deck is affected
 [[patches]]
 [patches.pattern]
 target = 'functions/UI_definitions.lua'

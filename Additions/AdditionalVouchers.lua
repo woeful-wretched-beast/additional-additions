@@ -56,9 +56,11 @@ G.FUNCS.check_for_buy_space = function(card)
             end
         end
         if neg_role_count < 2 then
+            local true_cost = card.cost
             if #G.consumeables.cards == G.consumeables.config.card_limit then
                 card:set_edition('e_negative', true)
             end
+            card.cost = true_cost
             return true
         end
     end
