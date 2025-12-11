@@ -119,11 +119,28 @@ match_indent = true
 times = 1
 
 
-# adds the effects for mystic/apprentice seer
+# adds the effects for mystic/apprentice seer (OLD)
 [[patches]]
 [patches.pattern]
 target = 'functions/UI_definitions.lua'
 pattern = '''local card = create_card(v.type, area, nil, nil, nil, nil, nil, 'sho')'''
+position = 'before'
+payload = '''
+if G.GAME.addadd_roles.mystic_seer_active then
+    v.type = 'Tarot'
+elseif G.GAME.addadd_roles.apprentice_seer_active then
+    v.type = 'Planet'
+end
+'''
+match_indent = true
+times = 1
+
+
+# adds the effects for mystic/apprentice seer but for current smods
+[[patches]]
+[patches.pattern]
+target = 'functions/UI_definitions.lua'
+pattern = '''local args = {set = v.type, area = area, key_append = 'sho'}'''
 position = 'before'
 payload = '''
 if G.GAME.addadd_roles.mystic_seer_active then
