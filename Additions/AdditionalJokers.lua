@@ -155,7 +155,7 @@ SMODS.Joker {
     loc_txt = {
         name = 'High-Tech Authority',
         text = {
-            'Earn {C:money}#1#${} if {C:attention}2{} or more',
+            'Earn {C:money}$#1#{} if {C:attention}2{} or more',
             '{C:attention}Aces{} are played'
         }
     },
@@ -302,7 +302,7 @@ SMODS.Joker {
         text = {
             'If played hand is a',
             '{C:attention}Three of a Kind{} that\'s',
-            'composed of {C:attention}6s{}, earn {C:money}#1#${}',
+            'composed of {C:attention}6s{}, earn {C:money}$#1#{}',
             'and destroy this card'
         }
     },
@@ -469,8 +469,8 @@ SMODS.Joker {
     loc_txt = {
         name = 'Chocolate Coin',
         text = {
-            'Earn {C:money}#1#${} at end of',
-            'round, {C:money}-#2#${} per reroll.'
+            'Earn {C:money}$#1#{} at end of',
+            'round, {C:money}-$#2#{} per reroll.'
         }
     },
     loc_vars = function(self, info_queue, card)

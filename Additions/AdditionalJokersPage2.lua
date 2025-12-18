@@ -16,7 +16,7 @@ SMODS.Joker {
         text = {
             'When a {C:attention}joker{} is sold,',
             'stock a {C:attention}buffoon pack{}',
-            'that costs {C:money}4${}'
+            'that costs {C:money}$4{}'
         }
     },
     loc_vars = function(self, info_queue, card)
@@ -396,7 +396,7 @@ SMODS.Joker {
         name = 'Waterwheel Girl',
         text = {
             'When a {C:role}Role{} card is used,',
-            'set reroll cost to {C:money}#1#${}'
+            'set reroll cost to {C:money}$#1#{}'
         }
     },
     loc_vars = function(self, info_queue, card)
