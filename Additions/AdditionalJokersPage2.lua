@@ -250,7 +250,7 @@ SMODS.Joker {
     loc_txt = {
         name = 'Clickbait',
         text = {
-            'Played {C:attention}bonus cards{}',
+            'Played {C:chips}Bonus{} cards',
             'give {C:mult}+#1#{} Mult',
             'when scored'
         }
@@ -289,7 +289,7 @@ SMODS.Joker {
         name = 'Fire Lion',
         text = {
             '{C:chips}+#1#{} Chips for each',
-            '{C:attention}Mult Card{} in',
+            '{C:mult}mult{} card in',
             'your {C:attention}full deck{}',
             '{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips){}'
         }

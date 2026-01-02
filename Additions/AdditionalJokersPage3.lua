@@ -244,3 +244,257 @@ SMODS.Joker {
         end
     end
 }
+
+SMODS.Joker {
+    key = 'tardy_joker',
+    name = 'TardyJoker',
+    atlas = "add_atlas",
+    pos = { x = 0, y = 8 },
+    rarity = 1,
+    cost = 5,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    blueprint_compat = true,
+    config = { extra = { mult = 3 } },
+    loc_txt = {
+        name = 'Tardy Joker',
+        text = {
+            '{C:mult}+#1#{} Mult for each hand',
+            '{C:attention}played{} this round,',
+            '{C:attention}doubled{} on final hand',
+            '{C:inactive}(currently {C:mult}+#2#{C:inactive} Mult){}'
+        }
+    },
+    loc_vars = function(self, info_queue, card)
+        local provided_mult = card.ability.extra.mult * G.GAME.current_round.hands_played
+        if G.GAME.current_round.hands_left == 1 then
+            provided_mult = provided_mult * 2
+        end
+        if G.GAME.blind then
+            if not G.GAME.blind.in_blind then
+                provided_mult = 0
+            end
+        end
+        return { vars = { card.ability.extra.mult, provided_mult } }
+    end,
+    calculate = function(self, card, context)
+        if context.hand_drawn and G.GAME.current_round.hands_left == 1 then
+            local eval = function() return G.GAME.current_round.hands_left == 1 and not G.RESET_JIGGLES end
+            juice_card_until(card, eval, true)
+        end
+        if context.joker_main then
+            local provided_mult = card.ability.extra.mult * G.GAME.current_round.hands_played
+            if G.GAME.current_round.hands_left == 0 then
+                provided_mult = provided_mult * 2
+            end
+            if provided_mult > 0 then
+                return {
+                    mult_mod = provided_mult,
+                    message = localize { type = 'variable', key = 'a_mult', vars = { provided_mult } }
+                }
+            end
+        end
+    end
+}
+
+SMODS.Joker {
+    key = 'swinger',
+    name = 'swinger',
+    atlas = "add_atlas",
+    pos = { x = 1, y = 8 },
+    rarity = 1,
+    cost = 5,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    blueprint_compat = true,
+    config = { extra = { mult = 10 } },
+    loc_txt = {
+        name = 'Swinger',
+        text = {
+            '{C:mult}+#1#{} Mult if hand hasn\'t',
+            'been {C:attention}played{} this round'
+        }
+    },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.mult } }
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main and G.GAME.hands[context.scoring_name] and G.GAME.hands[context.scoring_name].played_this_round == 1 then
+            return {
+                mult_mod = card.ability.extra.mult,
+                message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.mult } }
+            }
+        end
+    end
+}
+
+SMODS.Joker {
+    key = 'commoncents',
+    name = 'Common_Cents',
+    atlas = "add_atlas",
+    pos = { x = 2, y = 8 },
+    rarity = 1,
+    cost = 6,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    blueprint_compat = false,
+    config = { extra = { money = 2 } },
+    loc_txt = {
+        name = 'Common Cents',
+        text = {
+            'Earn {C:money}$#1#{} for every other',
+            'owned {C:common}Common{} joker',
+            'at end of round'
+        }
+    },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.money } }
+    end,
+    calc_dollar_bonus = function(self, card)
+        local commons = -1
+        for _, jker in ipairs(G.jokers.cards) do
+            if jker.config.center.rarity == 1 then
+                commons = commons + 1
+            end
+        end
+        local bonus = card.ability.extra.money * commons
+        if bonus > 0 then 
+            return bonus 
+        end
+    end
+}
+
+SMODS.Joker {
+    key = 'recyclingbin',
+    name = 'Recycling_Bin',
+    atlas = "add_atlas",
+    pos = { x = 3, y = 8 },
+    rarity = 1,
+    cost = 5,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    blueprint_compat = true,
+    config = { extra = { chips = 0 } },
+    loc_txt = {
+        name = 'Recycling Bin',
+        text = {
+            'Provides the total {C:chips}chips{}',
+            'of all {C:attention}playing cards{} in the',
+            'most recent {C:red}discard{}',
+            '{C:inactive}(currently {C:chips}+#1#{C:inactive} chips){}'
+        }
+    },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.chips } }
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main then
+            if card.ability.extra.chips > 0 then
+                return {
+                    chip_mod = card.ability.extra.chips,
+                    message = localize { type = 'variable', key = 'a_chips', vars = { card.ability.extra.chips } }
+                }
+            end
+        end
+        if context.pre_discard and not context.blueprint then
+            card.ability.extra.chips = 0
+            return {
+                message = localize('k_reset')
+            }
+        end
+        if context.discard and not context.blueprint then
+            card.ability.extra.chips = card.ability.extra.chips + context.other_card:get_chip_bonus()
+        end
+    end
+}
+
+SMODS.Joker {
+    key = 'bluerazcherry',
+    name = 'Blue_Raz-Cherry_Slush',
+    atlas = "add_atlas",
+    pos = { x = 4, y = 8 },
+    rarity = 1,
+    cost = 6,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    blueprint_compat = true,
+    config = { extra = { conversions = 10 } },
+    loc_txt = {
+        name = 'Blue Raz-Cherry Slushie',
+        text = {
+            'The next {C:attention}#1#{} numbered, scoring',
+            'cards become {C:mult}Mult{} cards if {C:attention}odd{}',
+            'or {C:chips}Bonus{} cards if {C:attention}even{}'
+        }
+    },
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue+1] = G.P_CENTERS.m_mult
+        info_queue[#info_queue+1] = G.P_CENTERS.m_bonus
+        return { vars = { card.ability.extra.conversions } }
+    end,
+    calculate = function(self, card, context)
+        if context.before then
+            local sipped = false
+            for k, v in ipairs(context.scoring_hand) do
+                if v:get_id() <= 10 and card.ability.extra.conversions > 0 then 
+                    sipped = true
+                    card.ability.extra.conversions = card.ability.extra.conversions - 1
+                    if v:get_id()%2 == 0 then
+                        v:set_ability(G.P_CENTERS.m_bonus, nil, true)
+                    else
+                        v:set_ability(G.P_CENTERS.m_mult, nil, true)
+                    end
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            v:juice_up()
+                            return true
+                        end
+                    })) 
+                end
+            end
+            if card.ability.extra.conversions == 0 then
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        play_sound('tarot1')
+                        card.T.r = -0.2
+                        card:juice_up()
+                        card.states.drag.is = true
+                        card.children.center.pinch.x = true
+                        G.E_MANAGER:add_event(Event({
+                            trigger = 'after',
+                            delay = 0.3,
+                            blockable = false,
+                            func = function()
+                                G.jokers:remove_card(card)
+                                card:remove()
+                                card = nil
+                                return true;
+                            end
+                        }))
+                        return true
+                    end
+                }))
+                return {
+                    message = 'Slurped!'
+                }
+            else 
+                if sipped then
+                    return {
+                        message = 'Sipped!',
+                        card = card
+                    }
+                end
+            end
+        end
+    end
+}
