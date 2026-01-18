@@ -16,7 +16,7 @@ SMODS.Joker {
         text = {
             'When a {C:attention}joker{} is sold,',
             'stock a {C:attention}buffoon pack{}',
-            'that costs {C:money}4${}'
+            'that costs {C:money}$4{}'
         }
     },
     loc_vars = function(self, info_queue, card)
@@ -250,7 +250,7 @@ SMODS.Joker {
     loc_txt = {
         name = 'Clickbait',
         text = {
-            'Played {C:attention}bonus cards{}',
+            'Played {C:chips}Bonus{} cards',
             'give {C:mult}+#1#{} Mult',
             'when scored'
         }
@@ -289,7 +289,7 @@ SMODS.Joker {
         name = 'Fire Lion',
         text = {
             '{C:chips}+#1#{} Chips for each',
-            '{C:attention}Mult Card{} in',
+            '{C:mult}mult{} card in',
             'your {C:attention}full deck{}',
             '{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips){}'
         }
@@ -396,7 +396,7 @@ SMODS.Joker {
         name = 'Waterwheel Girl',
         text = {
             'When a {C:role}Role{} card is used,',
-            'set reroll cost to {C:money}#1#${}'
+            'set reroll cost to {C:money}$#1#{}'
         }
     },
     loc_vars = function(self, info_queue, card)

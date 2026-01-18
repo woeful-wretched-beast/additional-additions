@@ -75,6 +75,7 @@ Addadd_Funcs = {}
 NFS.load(SMODS.current_mod.path..'Utils.lua')()
 NFS.load(SMODS.current_mod.path..'Additions/AdditionalJokers.lua')()
 NFS.load(SMODS.current_mod.path..'Additions/AdditionalJokersPage2.lua')()
+NFS.load(SMODS.current_mod.path..'Additions/AdditionalJokersPage3.lua')()
 NFS.load(SMODS.current_mod.path..'Additions/AdditionalDecks.lua')()
 NFS.load(SMODS.current_mod.path..'Additions/AdditionalEnhancements.lua')()
 NFS.load(SMODS.current_mod.path..'Additions/AdditionalConsumeables.lua')()
