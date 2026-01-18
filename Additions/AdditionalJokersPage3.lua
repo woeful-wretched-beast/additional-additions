@@ -498,3 +498,220 @@ SMODS.Joker {
         end
     end
 }
+
+SMODS.Joker {
+    key = 'banker',
+    name = 'Banker',
+    atlas = "add_atlas",
+    pos = { x = 0, y = 9 },
+    rarity = 1,
+    cost = 5,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    blueprint_compat = true,
+    config = { extra = { mult = 25 } },
+    loc_txt = {
+        name = 'Banker',
+        text = {
+            '{C:mult}+#1#{} Mult, {C:red}-1{} for',
+            'every {C:money}${} you own',
+            '{C:inactive}(currently {C:mult}+#2#{C:inactive} Mult){}'
+        }
+    },
+    loc_vars = function(self, info_queue, card)
+        local prov_mult = card.ability.extra.mult
+        prov_mult = prov_mult - G.GAME.dollars
+        if prov_mult < 0 then
+            prov_mult = 0
+        end
+        return { vars = { card.ability.extra.mult, prov_mult } }
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main then
+            local prov_mult = card.ability.extra.mult
+            prov_mult = prov_mult - G.GAME.dollars
+            if prov_mult < 0 then
+                prov_mult = 0
+            end
+            return {
+                mult_mod = prov_mult,
+                message = localize { type = 'variable', key = 'a_mult', vars = { prov_mult } }
+            }
+        end
+    end
+}
+
+SMODS.Joker {
+    key = 'painterlyjoker',
+    name = 'Painterly_Joker',
+    atlas = "add_atlas",
+    pos = { x = 1, y = 9 },
+    rarity = 1,
+    cost = 5,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    blueprint_compat = true,
+    config = { extra = { mult = 6 } },
+    loc_txt = {
+        name = 'Painterly Joker',
+        text = {
+            '{C:mult}+#1#{} Mult for each unique',
+            '{C:attention}suit{} in played hand'
+        }
+    },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.mult } }
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main then
+            local prov_mult = 0
+            local suits = {}
+            for k, v in pairs(context.scoring_hand) do
+                suits[v.base.suit] = true
+                if SMODS.has_any_suit(v) then
+                    suits["Spades"] = true
+                    suits["Diamonds"] = true
+                    suits["Hearts"] = true
+                    suits["Clubs"] = true
+                end
+            end
+            for k, v in pairs(suits) do
+                prov_mult = prov_mult + 1
+            end
+            prov_mult = card.ability.extra.mult * prov_mult
+            return {
+                mult_mod = prov_mult,
+                message = localize { type = 'variable', key = 'a_mult', vars = { prov_mult } }
+            }
+        end
+    end
+}
+
+SMODS.Joker {
+    key = 'chipperjoker',
+    name = 'Chipper_Joker',
+    atlas = "add_atlas",
+    pos = { x = 2, y = 9 },
+    rarity = 1,
+    cost = 5,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    blueprint_compat = true,
+    enhancement_gate = 'm_bonus',
+    config = { extra = { chips = 10 } },
+    loc_txt = {
+        name = 'Chipper Joker',
+        text = {
+            'Played {C:chips}Bonus{} cards gain',
+            '{C:chips}+#1#{} chips when scored'
+        }
+    },
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue+1] = G.P_CENTERS.m_bonus
+        return { vars = { card.ability.extra.chips } }
+    end,
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.play then
+            if context.other_card.config.center == G.P_CENTERS.m_bonus then
+                context.other_card.ability.perma_bonus = (context.other_card.ability.perma_bonus or 0) + card.ability.extra.chips
+                return {
+                    message = localize('k_upgrade_ex'),
+                    colour = G.C.CHIPS
+                }
+            end
+        end
+    end
+}
+
+SMODS.Joker {
+    key = 'multijoker',
+    name = 'Multi_Joker',
+    atlas = "add_atlas",
+    pos = { x = 3, y = 9 },
+    rarity = 1,
+    cost = 5,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    blueprint_compat = true,
+    enhancement_gate = 'm_mult',
+    config = { extra = { mult_mod = 2, scored_mult = 0 } },
+    loc_txt = {
+        name = 'Multifaceted Joker',
+        text = {
+            'Scored {C:mult}Mult{} cards give {C:mult}+#1#{} Mult',
+            'for each scored {C:mult}Mult{} card',
+        }
+    },
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue+1] = G.P_CENTERS.m_mult
+        return { vars = { card.ability.extra.mult_mod } }
+    end,
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.play then
+            if context.other_card.config.center == G.P_CENTERS.m_mult then
+                card.ability.extra.scored_mult = card.ability.extra.scored_mult + 1
+                return {
+                    mult = card.ability.extra.mult_mod * card.ability.extra.scored_mult,
+                    card = card
+                }
+            end
+        end
+        if context.after then
+            card.ability.extra.scored_mult = 0
+        end
+    end
+}
+
+SMODS.Joker {
+    key = 'conduit',
+    name = 'Conduit',
+    atlas = "add_atlas",
+    pos = { x = 4, y = 9 },
+    rarity = 1,
+    cost = 7,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    blueprint_compat = true,
+    config = { extra = { repetitions = 1 } },
+    loc_txt = {
+        name = 'Conduit',
+        text = {
+            '{C:attention}Retrigger{} played {C:mult}Mult{}',
+            'and {C:chips}Bonus{} cards'
+        }
+    },
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue+1] = G.P_CENTERS.m_mult
+        info_queue[#info_queue+1] = G.P_CENTERS.m_bonus
+        return { vars = { card.ability.extra.mult_mod } }
+    end,
+    calculate = function(self, card, context)
+        if context.cardarea == G.play and context.repetition and not context.repetition_only then
+            if SMODS.has_enhancement(context.other_card, 'm_mult') or SMODS.has_enhancement(context.other_card, 'm_bonus') then
+                return {
+                    message = localize('k_again_ex'),
+                    repetitions = card.ability.extra.repetitions,
+                    card = card
+                }
+            end
+        end
+    end,
+    in_pool = function(self, args) 
+        for index, playing_card in ipairs(G.playing_cards or {}) do
+            if SMODS.has_enhancement(playing_card, 'm_mult') or SMODS.has_enhancement(playing_card, 'm_bonus') then
+                return true
+            end
+        end
+        return false
+    end
+}
