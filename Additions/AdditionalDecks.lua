@@ -179,3 +179,33 @@ SMODS.Back {
         }
     end,
 }
+
+SMODS.Back {
+    name = "irradiateddeck",
+    key = "irradiated_deck",
+    atlas = "additional_backs",
+    pos = {x = 0, y = 1},
+    config = {  },
+    loc_txt = {
+        name = "Irradiated Deck",
+        text = {
+
+            '{C:attention}+1{} voucher slot,',
+            '{C:attention}+1{} booster slot,',
+            'reroll cost increase',
+            'is {C:red}doubled{}'
+        },
+    },
+    loc_vars = function(self)
+		return { vars = {  } }
+	end,
+    apply = function(self)
+        G.E_MANAGER:add_event(Event({
+            func = function()
+                SMODS.change_voucher_limit(1)
+                SMODS.change_booster_limit(1)
+                return true
+            end
+        }))
+    end
+}

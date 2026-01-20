@@ -265,6 +265,21 @@ match_indent = true
 times = 1
 
 
+# reroll cost inc doubling for irradiated deck
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = '''if not skip_increment then G.GAME.current_round.reroll_cost_increase = G.GAME.current_round.reroll_cost_increase + 1 end'''
+position = 'before'
+payload = '''
+if not skip_increment and G.GAME.selected_back.effect.center.key == "b_addadd_irradiated_deck" then 
+    G.GAME.current_round.reroll_cost_increase = G.GAME.current_round.reroll_cost_increase + 1 
+end
+'''
+match_indent = true
+times = 1
+
+
 # the bottle
 [[patches]]
 [patches.pattern]
