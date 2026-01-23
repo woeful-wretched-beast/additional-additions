@@ -63,8 +63,8 @@ times = 1
 [[patches]]
 [patches.pattern]
 target = 'game.lua'
-pattern = '''sort = 'desc','''
-position = 'after'
+pattern = '''previous_round = {'''
+position = 'before'
 payload = '''
 addadd_roles = {
     masons_used = 0,
