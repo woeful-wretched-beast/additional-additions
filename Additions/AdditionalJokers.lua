@@ -250,7 +250,7 @@ SMODS.Joker {
         name = 'Silver Dollar',
         text = {
             '{C:attention}Lucky{} cards have two',
-            '{C:green}#2# in #4#{} chances to',
+            '{C:green}#2# in #3#{} chances to',
             'be retriggered'
         }
         -- text = {
@@ -260,16 +260,17 @@ SMODS.Joker {
         -- }
     },
     loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.retriggers, (G.GAME.probabilities.normal or 1), card.ability.extra.odds, card.ability.extra.evens} }
+        local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, 'silver_dollar')
+        return { vars = { card.ability.extra.retriggers, numerator, denominator} }
     end,
     calculate = function(self, card, context)
         if context.cardarea == G.play and context.repetition and not context.repetition_only then
-            if context.other_card.ability.effect == 'Lucky Card' then
+            if SMODS.has_enhancement(context.other_card, "m_lucky") then
                 local hits = 0
-                if pseudorandom('silver_dollar') < G.GAME.probabilities.normal / card.ability.extra.odds then
+                if SMODS.pseudorandom_probability(card, 'silver_dollar', 1, card.ability.extra.odds) then
                     hits = hits + 1
                 end
-                if pseudorandom('silver_dollar') < G.GAME.probabilities.normal / card.ability.extra.evens then
+                if SMODS.pseudorandom_probability(card, 'silver_dollar', 1, card.ability.extra.odds) then
                     hits = hits + 1
                 end
                 if hits >= 1 then
@@ -387,30 +388,37 @@ SMODS.Joker {
                     end
                 end
 				if not scoring then 
-                    local percent = 1.15 - (i - 0.999) / (#G.hand.cards - 0.998) * 0.3
-					G.E_MANAGER:add_event(Event({
-                        trigger = "after",
-			            delay = 0.15,
-			            func = function()
-                            G.play.cards[i]:flip()
-                            play_sound('card1', percent)
-                            G.play.cards[i]:juice_up(0.3,0.3)
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
                             G.play.cards[i]:set_ability(G.P_CENTERS[SMODS.poll_enhancement({guaranteed = true, key = 'lemonade'})])
+                            G.play.cards[i]:juice_up()
                             return true
-                        end,
-                    }))
-                    delay(0.75)
-                    local percent = 0.85 - (i - 0.999) / (#G.hand.cards - 0.998) * 0.3
-			        G.E_MANAGER:add_event(Event({
-				        trigger = "after",
-			            delay = 0.15,
-			            func = function()
-                            G.play.cards[i]:flip()
-                            play_sound('tarot2', percent, 0.6)
-                            G.play.cards[i]:juice_up(0.3,0.3)
-                            return true
-                        end,
-                    }))
+                        end
+                    })) 
+                    -- local percent = 1.15 - (i - 0.999) / (#G.hand.cards - 0.998) * 0.3
+					-- G.E_MANAGER:add_event(Event({
+                    --     trigger = "after",
+			        --     delay = 0.15,
+			        --     func = function()
+                    --         G.play.cards[i]:flip()
+                    --         play_sound('card1', percent)
+                    --         G.play.cards[i]:juice_up(0.3,0.3)
+                    --         G.play.cards[i]:set_ability(G.P_CENTERS[SMODS.poll_enhancement({guaranteed = true, key = 'lemonade'})])
+                    --         return true
+                    --     end,
+                    -- }))
+                    -- delay(0.75)
+                    -- local percent = 0.85 - (i - 0.999) / (#G.hand.cards - 0.998) * 0.3
+			        -- G.E_MANAGER:add_event(Event({
+				    --     trigger = "after",
+			        --     delay = 0.15,
+			        --     func = function()
+                    --         G.play.cards[i]:flip()
+                    --         play_sound('tarot2', percent, 0.6)
+                    --         G.play.cards[i]:juice_up(0.3,0.3)
+                    --         return true
+                    --     end,
+                    -- }))
 				end
 			end
         end

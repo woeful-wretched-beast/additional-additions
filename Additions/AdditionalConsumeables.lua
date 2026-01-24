@@ -51,9 +51,11 @@ SMODS.Consumable {
                 trigger = "after",
                 delay = 0.15,
                 func = function()
-                    play_sound("tarot2", percent)
-                    G.hand.cards[i]:flip()
-                    G.hand.cards[i]:juice_up(0.3, 0.3)
+                    if G.hand.cards[i].facing == "back" then
+                        play_sound("tarot2", percent)
+                        G.hand.cards[i]:flip()
+                        G.hand.cards[i]:juice_up(0.3, 0.3)
+                    end
                     return true 
                 end,
             }))

@@ -618,7 +618,7 @@ SMODS.Joker {
     end,
     calculate = function(self, card, context)
         if context.individual and context.cardarea == G.play then
-            if context.other_card.config.center == G.P_CENTERS.m_bonus then
+            if SMODS.has_enhancement(context.other_card, "m_bonus") then
                 context.other_card.ability.perma_bonus = (context.other_card.ability.perma_bonus or 0) + card.ability.extra.chips
                 return {
                     message = localize('k_upgrade_ex'),
@@ -656,7 +656,7 @@ SMODS.Joker {
     end,
     calculate = function(self, card, context)
         if context.individual and context.cardarea == G.play then
-            if context.other_card.config.center == G.P_CENTERS.m_mult then
+            if SMODS.has_enhancement(context.other_card, "m_mult") then
                 card.ability.extra.scored_mult = card.ability.extra.scored_mult + 1
                 return {
                     mult = card.ability.extra.mult_mod * card.ability.extra.scored_mult,

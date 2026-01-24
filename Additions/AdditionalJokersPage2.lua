@@ -261,7 +261,7 @@ SMODS.Joker {
     end,
     calculate = function(self, card, context)
         if context.individual and context.cardarea == G.play then
-            if context.other_card.config.center == G.P_CENTERS.m_bonus then
+            if SMODS.has_enhancement(context.other_card, "m_bonus") then
                 return {
                     mult = card.ability.extra.mult_mod,
                     card = card
@@ -299,7 +299,7 @@ SMODS.Joker {
         local mult_count = 0
         if G.GAME and G.playing_cards then
             for i, card in ipairs(G.playing_cards) do
-                if card.config.center == G.P_CENTERS.m_mult then 
+                if SMODS.has_enhancement(card, "m_mult") then 
                     mult_count = mult_count + 1
                 end
             end
@@ -311,7 +311,7 @@ SMODS.Joker {
             local mult_count = 0
             if G.GAME and G.playing_cards then
                 for i, card in ipairs(G.playing_cards) do
-                    if card.config.center == G.P_CENTERS.m_mult then 
+                    if SMODS.has_enhancement(card, "m_mult") then 
                         mult_count = mult_count + 1
                     end
                 end
@@ -339,7 +339,7 @@ SMODS.Joker {
     loc_txt = {
         name = 'Martian Scout',
         text = {
-            '{C:green}#2# in #1#{} chance to create ',
+            '{C:green}#1# in #2#{} chance to create ',
             'a {C:role}Role{} card the {C:attention}1st{} time',
             'each {C:planet}Planet{} card is used',
             'since shop was last entered',
@@ -347,7 +347,8 @@ SMODS.Joker {
         }
     },
     loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.odds, G.GAME.probabilities.normal or 1 } }
+        local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, 'alieg')
+        return { vars = { numerator, denominator } }
     end,
     calculate = function(self, card, context)
         if context.using_consumeable and context.consumeable.ability.set == "Planet" then
@@ -358,7 +359,7 @@ SMODS.Joker {
                 end
             end
             if active then
-                if pseudorandom('alieg!!!') < G.GAME.probabilities.normal / card.ability.extra.odds then
+                if SMODS.pseudorandom_probability(card, 'alieg', 1, card.ability.extra.odds) then
                     G.E_MANAGER:add_event(Event({
                         func = function()
                             if #G.consumeables.cards < G.consumeables.config.card_limit then
@@ -518,16 +519,17 @@ SMODS.Joker {
         text = {
             'If {C:attention}first{} hand of round does',
             'not contain a {C:attention}Straight Flush{},',
-            '{C:attention}scored{} cards have a {C:green}1 in 2{}',
+            '{C:attention}scored{} cards have a {C:green}#1# in #2#{}',
             'chance to be {C:red}destroyed{}'
         }
     },
     loc_vars = function(self, info_queue, card)
-        return { vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds } }
+        local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, '7skiesH3')
+        return { vars = { numerator, denominator } }
     end,
     calculate = function(self, card, context)
         if context.destroying_card and not next(context.poker_hands['Straight Flush']) and G.GAME.current_round.hands_played == 0 and not context.blueprint then
-            if pseudorandom('silver_dollar') < G.GAME.probabilities.normal / card.ability.extra.odds then
+            if SMODS.pseudorandom_probability(card, '7skiesH3', 1, card.ability.extra.odds) then
                 return true
             end
         end
