@@ -10,7 +10,7 @@ SMODS.Joker {
     eternal_compat = true,
     perishable_compat = true,
     blueprint_compat = true,
-    config = { extra = { odds = 3 } },
+    config = { extra = { odds = 2 } },
     loc_txt = {
         name = 'Barrow Fog',
         text = {
@@ -209,12 +209,13 @@ SMODS.Joker {
     eternal_compat = true,
     perishable_compat = true,
     blueprint_compat = true,
-    config = { extra = { chips = 0, chip_gain = 40 } },
+    config = { extra = { chips = 0, chip_gain = 30 } },
     loc_txt = {
         name = 'Auctioneer',
         text = {
             '{C:chips}+#1#{} chips for each',
-            'card {C:attention}sold{} this round',
+            'card {C:attention}sold{} since the',
+            'previous round',
             '{C:inactive}(currently {C:chips}+#2#{C:inactive} chips){}'
         }
     },
@@ -222,7 +223,7 @@ SMODS.Joker {
         return { vars = { card.ability.extra.chip_gain, card.ability.extra.chips } }
     end,
     calculate = function(self, card, context)
-        if context.selling_card and G.GAME.blind.in_blind and not context.blueprint then
+        if context.selling_card and not context.blueprint then
             card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chip_gain
                 return {
                     message = 'Upgrade!',

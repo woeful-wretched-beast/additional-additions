@@ -1,6 +1,6 @@
 [manifest]
 version = "1.0.0"
-priority = 0
+priority = 89521
 
 # shop_start context for stock jokers
 [[patches]]
@@ -181,7 +181,7 @@ payload = '''
 if G.GAME.addadd_roles.curator_active then
     for i = 1, 3 do
         if rarity == 1 then
-            rarity = SMODS.poll_rarity("Joker", 'rarity'..G.GAME.round_resets.ante..(_append or ''))
+            rarity = _rarity or SMODS.poll_rarity("Joker", 'rarity'..G.GAME.round_resets.ante..(_append or ''))
         end
     end
 end
